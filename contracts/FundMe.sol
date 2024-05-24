@@ -1,38 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import {PriceConverter} from "contracts/PriceConverter.sol";
 
 contract FundMe{
 
+    using PriceConverter for uint256;
+
     uint256 internal minInUSD = 5 * 10 ** 18;
+    address[] funders;
+    mapping (address => uint256) addressToAmount;
+    address owner;
+
+    constructor(){
+        owner = msg.sender;
+    }
 
     function fund() public payable {
         // 1e18 = 1 eth = 1 * 10 ** 18 wei
         // require(msg.value > 1e18, "at least 1 eth");
-        require(getConversionRate(msg.value) > minInUSD, "at least 5 dollars");
-
+        require(msg.value.getConversionRate() > minInUSD, "at least 5 dollars");
+        funders.push(msg.sender);
+        addressToAmount[msg.sender] += msg.value;
     }
 
 
-    function withdraw() public {
+    function withdraw() public onlyOwner{
+        for(uint256 i = 0; i < funders.length; i++){
+            address funder = funders[i];
+            addressToAmount[funder] = 0;
+        }
 
+        funders = new address[](0);
+        (bool success, /* bytes memory data */) = payable (msg.sender).call{value: address(this).balance}("");
+        require(success, "Withdraw failed.");
     }
-
-    // Price of ETH in terms of USD
-    function getPrice() public view returns(uint256){
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
-        (, int256 answer, , , ) = priceFeed.latestRoundData();
-        // ETH/USD rate in 18 digits
-        // return uint256(answer * 1e10);
-        return uint256(answer);
+    
+    modifier onlyOwner(){
+        require(owner == msg.sender, "Must be owner!");
+        _;
     }
-
-    function getConversionRate(uint256 ethAmount) public view returns(uint256){
-        uint256 ethPrice = getPrice();
-        uint256 ethInUSD = (ethPrice * ethAmount) / 1e18;
-        return ethInUSD;
-    }
-
 
 }
