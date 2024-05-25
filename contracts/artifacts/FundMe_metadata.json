@@ -7,41 +7,23 @@
 		"abi": [
 			{
 				"inputs": [],
-				"name": "fund",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "ethAmount",
-						"type": "uint256"
-					}
-				],
-				"name": "getConversionRate",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
+				"stateMutability": "nonpayable",
+				"type": "constructor"
 			},
 			{
 				"inputs": [],
-				"name": "getPrice",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "MustOwner",
+				"type": "error"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [],
+				"name": "fund",
+				"outputs": [],
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -50,6 +32,10 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -88,11 +74,19 @@
 			]
 		},
 		"contracts/FundMe.sol": {
-			"keccak256": "0x842b30559e8e4d6f56b5ae9a157ebb09707fb462544ad17a5a28873888467bca",
+			"keccak256": "0xaf3aa45907912676df4edb5a7cd74e6e390686da97631b65682834c852746ee8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b2c616b8dd8f30c32b456d9b09ab304551a053e4af820fef2306b6b7f54d7ca9",
-				"dweb:/ipfs/QmU7ouLT6e7aW1eV45AJf8sHFTwA1kW3ughwcnUhBTXbcA"
+				"bzz-raw://2b871ba5e28ad76b0fded7170c9f9f9d5bb99fdf985f26aa5bf37ad38364593e",
+				"dweb:/ipfs/QmWVFgXkbuURgDnhohLY8i4BW6WVtTxn6jPfNWxuLZm5kY"
+			]
+		},
+		"contracts/PriceConverter.sol": {
+			"keccak256": "0x091aeadbec704fe0db1193e5a61e49d0c674471aa12d927dfdde597d911b6580",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e96d1f432f8a19b67422faac23be6235eb854db7152a05d6332a90c4506232b1",
+				"dweb:/ipfs/Qme75tMuxSYYKmaCQwRmHSxvQfvY8PZgzKBphSs8fg9PZ3"
 			]
 		}
 	},

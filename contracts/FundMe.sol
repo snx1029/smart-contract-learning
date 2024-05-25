@@ -2,24 +2,25 @@
 pragma solidity ^0.8.18;
 
 import {PriceConverter} from "contracts/PriceConverter.sol";
+error MustOwner();
 
 contract FundMe{
 
     using PriceConverter for uint256;
 
-    uint256 internal minInUSD = 5 * 10 ** 18;
+    uint256 internal constant MIN_IN_USD = 5 * 10 ** 18;
     address[] funders;
     mapping (address => uint256) addressToAmount;
-    address owner;
+    address immutable i_owner;
 
     constructor(){
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     function fund() public payable {
         // 1e18 = 1 eth = 1 * 10 ** 18 wei
         // require(msg.value > 1e18, "at least 1 eth");
-        require(msg.value.getConversionRate() > minInUSD, "at least 5 dollars");
+        require(msg.value.getConversionRate() > MIN_IN_USD, "at least 5 dollars");
         funders.push(msg.sender);
         addressToAmount[msg.sender] += msg.value;
     }
@@ -37,8 +38,19 @@ contract FundMe{
     }
     
     modifier onlyOwner(){
-        require(owner == msg.sender, "Must be owner!");
+        // require(i_owner == msg.sender, "Must be owner!");
+        if(i_owner != msg.sender){
+            revert MustOwner();
+        }
         _;
+    }
+
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable { 
+        fund();
     }
 
 }
